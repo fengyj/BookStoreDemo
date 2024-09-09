@@ -1,0 +1,122 @@
+@BookStoreService_HostAddress = https://localhost:7072/api
+@JwtToken_User =  {{userLoginRequest.response.body.jwtToken}}
+@JwtToken_Admin = {{adminLoginRequest.response.body.jwtToken}}
+@FirstProductId = {{getProducts.response.body.data[0].productId}}
+@SecondProductId = {{getProducts.response.body.data[1].productId}}
+@FirstItemQtyInCart = {{getCart.response.body.items[0].quantity}}
+@SecondItemQtyInCart = {{getCart.response.body.items[1].quantity}}
+@FirstItemProductInCart = {{getCart.response.body.items[0].product.productId}}
+@SecondItemProductInCart = {{getCart.response.body.items[1].product.productId}}
+@CustomerId = {{getCart.response.body.customerId}}
+
+### 
+# @name adminLoginRequest
+
+POST {{BookStoreService_HostAddress}}/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "1qa@WS3ed"
+}
+
+### Register a new user.
+POST {{BookStoreService_HostAddress}}/users/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "username": "Normal_User",
+  "password": "ZXCqwe!2"
+}
+
+### Log in with the new created user
+# @name userLoginRequest
+
+POST {{BookStoreService_HostAddress}}/users/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "ZXCqwe!2"
+}
+
+### Set role to the new user
+PUT {{BookStoreService_HostAddress}}/users/role
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_Admin}}
+
+{
+  "email": "user@example.com",
+  "role": "User"
+}
+
+### Get Products
+# @name getProducts
+GET {{BookStoreService_HostAddress}}/products
+Accept: application/json
+
+### Add product to cart
+POST {{BookStoreService_HostAddress}}/cart
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+{
+  "quantity": 10,
+  "productId": {{FirstProductId}}
+}
+
+### Get cart data
+GET {{BookStoreService_HostAddress}}/cart
+Accept: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+### Add panother roduct to cart
+POST {{BookStoreService_HostAddress}}/cart
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+{
+  "quantity": 10,
+  "productId": {{SecondProductId}}
+}
+
+### update product quantity
+PUT {{BookStoreService_HostAddress}}/cart
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+{
+  "quantity": 20,
+  "productId": {{SecondProductId}}
+}
+
+### Get cart data
+# @name getCart
+GET {{BookStoreService_HostAddress}}/cart
+Accept: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+### Order
+
+POST {{BookStoreService_HostAddress}}/orders
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+{
+  "items": [
+    {
+      "productId": "{{FirstItemProductInCart}}",
+      "quantity": {{FirstItemQtyInCart}}
+    },
+    {
+      "productId": "{{SecondItemProductInCart}}",
+      "quantity": {{SecondItemQtyInCart}}
+    }
+  ]
+}
+
+### Get orders
+GET {{BookStoreService_HostAddress}}/orders/{{CustomerId}}
+Accept: application/json
+Authorization: Bearer {{JwtToken_User}}
