@@ -21,7 +21,12 @@ Environment variables:
 
 ## APIs Usage Guide
 
-Please refer to the Swagger docs: https://localhost:7072/swagger/index.html
+Please refer to the [Swagger docs](https://localhost:7072/swagger/index.html).
+
+## Monitor & Logging
+
+The site can be monitored.
+    * Health checking: https://localhost:7072/health.
 
 ## System Design
 
@@ -31,4 +36,7 @@ This is demo online book store backend service project. It's based on the ASP.NE
 
 * Add unit tests...
 * Split the code in `Program.cs` into separated classes and functions.
-
+* DB health checking.
+* Docker health checking
+* Integrate with Telemetry
+* Write logs to somewhere

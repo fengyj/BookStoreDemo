@@ -124,18 +124,38 @@ namespace BookStoreService.Services.Identify {
         /// </summary>
         public static class ClaimsPrincipalExtensions {
 
+            /// <summary>
+            /// Get user id from ClaimsPrincipal
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <returns></returns>
             public static string? GetUserId(this ClaimsPrincipal principal) {
                 return principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             }
 
+            /// <summary>
+            /// Get user name from ClaimsPrincipal
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <returns></returns>
             public static string? GetUserName(this ClaimsPrincipal principal) {
                 return principal.FindFirst(ClaimTypes.Name)?.Value;
             }
 
+            /// <summary>
+            /// Get user email from ClaimsPrincipal
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <returns></returns>
             public static string? GetEmail(this ClaimsPrincipal principal) {
                 return principal.FindFirst(ClaimTypes.Email)?.Value;
             }
 
+            /// <summary>
+            /// get user role from ClaimsPrincipal
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <returns></returns>
             public static string? GetRole(this ClaimsPrincipal principal) {
                 return principal.FindFirst(ClaimTypes.Role)?.Value;
             }

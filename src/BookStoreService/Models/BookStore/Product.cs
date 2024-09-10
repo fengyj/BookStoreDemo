@@ -1,4 +1,7 @@
 ﻿namespace BookStoreService.Models.BookStore {
+    /// <summary>
+    /// Information of product
+    /// </summary>
     public class Product {
         /// <summary>
         /// Id of the product.
