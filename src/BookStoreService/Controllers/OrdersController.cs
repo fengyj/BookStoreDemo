@@ -81,7 +81,7 @@ namespace BookStoreService.Controllers {
                 return this.Forbid("Illegal action: current user tried to access others data.");
             }
 
-            var order = await this._context.Orders.FindAsync(orderId);
+            var order = await this._context.Orders.Where(i => i.OrderId == orderId).Include(i => i.Lines).FirstOrDefaultAsync();
 
             if (order == null || order.CustomerId != customerId) {
                 return this.NotFound();
