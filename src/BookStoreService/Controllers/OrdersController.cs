@@ -35,17 +35,17 @@ namespace BookStoreService.Controllers {
         /// <param name="customerId">The Id of the customer.</param>
         /// <param name="pageFilter">The pagination filter info.</param>
         /// <returns></returns>
-        [HttpGet("{customer_id}")]
+        [HttpGet]
         public async Task<ActionResult<PaginationResult<IEnumerable<OrderDto>>>> GetOrders(
-            [FromRoute(Name = "customer_id")] string customerId,
+            [FromQuery(Name = "customer_id")] string? customerId,
             [FromQuery] PaginationFilter? pageFilter = null) {
 
+            customerId ??= this.User.GetUserId()!;
             if (this.User.IsInRole("User") && this.User.GetUserId() != customerId) {
                 return this.Forbid("Illegal action: current user tried to access others data.");
             }
 
-            if (pageFilter == null)
-                pageFilter = new PaginationFilter();
+            pageFilter ??= new PaginationFilter();
 
             var orders = this._context.Orders.Where(i => i.CustomerId == customerId);
 
@@ -72,11 +72,12 @@ namespace BookStoreService.Controllers {
         /// <param name="customerId">The Id of the customer.</param>
         /// <param name="orderId">The Id of the order.</param>
         /// <returns></returns>
-        [HttpGet("{customer_id}/{order_id}")]
+        [HttpGet("{order_id}")]
         public async Task<ActionResult<OrderDto>> GetOrder(
-            [FromRoute(Name = "customer_id")] string customerId,
+            [FromQuery(Name = "customer_id")] string customerId,
             [FromRoute(Name = "order_id")] int orderId) {
 
+            customerId ??= this.User.GetUserId()!;
             if (this.User.IsInRole("User") && this.User.GetUserId() != customerId) {
                 return this.Forbid("Illegal action: current user tried to access others data.");
             }
@@ -99,10 +100,7 @@ namespace BookStoreService.Controllers {
         [Authorize(Roles = "User")]
         public async Task<ActionResult<Order>> PostOrder([FromBody] CreateOrderRequestDto requstData) {
 
-            var customerId = this.User.GetUserId();
-            if (customerId == null) {
-                return this.BadRequest("Unknown customer.");
-            }
+            var customerId = this.User.GetUserId()!;
 
             if (requstData == null || requstData.Items == null || !requstData.Items.Any()) {
                 return this.BadRequest("No order items.");

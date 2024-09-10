@@ -1,6 +1,8 @@
 ﻿using BookStoreService.DtoModels.Identify;
+using BookStoreService.DtoModels.Identify.Extensions;
 using BookStoreService.Models.Identify;
 using BookStoreService.Services.Identify;
+using BookStoreService.Services.Identify.Extensions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -37,6 +39,29 @@ namespace BookStoreService.Controllers {
             this._context = context;
             this._jwtTokenSvc = jwtTokenSvc;
             this._logger = logger;
+        }
+
+        /// <summary>
+        /// Get user info
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [HttpGet("me")]
+        [Authorize(Roles = "User,Admin")]
+        public async Task<ActionResult<UserInfoDto>> Get(string? id) {
+
+            id ??= this.User.GetUserId()!;
+            if (this.User.IsInRole("User") && this.User.GetUserId() != id) {
+                return this.Forbid("Illegal action: current user tried to access others data.");
+            }
+
+            var user = await this._context.Users.FindAsync(id);
+            if (user == null) {
+                return this.NotFound("Cannot find the user.");
+            }
+
+            return user.Convert();
         }
 
         /// <summary>

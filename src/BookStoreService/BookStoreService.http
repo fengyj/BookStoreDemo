@@ -8,6 +8,7 @@
 @FirstItemProductInCart = {{getCart.response.body.items[0].product.productId}}
 @SecondItemProductInCart = {{getCart.response.body.items[1].product.productId}}
 @CustomerId = {{getCart.response.body.customerId}}
+@UserId = {{userInfo.response.body.userId}}
 
 ### 
 # @name adminLoginRequest
@@ -20,6 +21,11 @@ Content-Type: application/json
   "password": "1qa@WS3ed"
 }
 
+###
+GET {{BookStoreService_HostAddress}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_Admin}}
+
 ### Register a new user.
 POST {{BookStoreService_HostAddress}}/users/register
 Content-Type: application/json
@@ -28,6 +34,16 @@ Content-Type: application/json
   "email": "user@example.com",
   "username": "Normal_User",
   "password": "ZXCqwe!2"
+}
+
+### Set role to the new user
+PUT {{BookStoreService_HostAddress}}/users/role
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_Admin}}
+
+{
+  "email": "user@example.com",
+  "role": "User"
 }
 
 ### Log in with the new created user
@@ -41,15 +57,17 @@ Content-Type: application/json
   "password": "ZXCqwe!2"
 }
 
-### Set role to the new user
-PUT {{BookStoreService_HostAddress}}/users/role
+###
+# @name userInfo
+GET {{BookStoreService_HostAddress}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{JwtToken_User}}
+
+###
+GET {{BookStoreService_HostAddress}}/users/{{UserId}}
 Content-Type: application/json
 Authorization: Bearer {{JwtToken_Admin}}
 
-{
-  "email": "user@example.com",
-  "role": "User"
-}
 
 ### Get Products
 # @name getProducts
@@ -117,6 +135,6 @@ Authorization: Bearer {{JwtToken_User}}
 }
 
 ### Get orders
-GET {{BookStoreService_HostAddress}}/orders/{{CustomerId}}
+GET {{BookStoreService_HostAddress}}/orders?customer_id={{CustomerId}}
 Accept: application/json
 Authorization: Bearer {{JwtToken_User}}
