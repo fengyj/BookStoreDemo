@@ -59,6 +59,7 @@ builder.Services
         opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(opt => {
         opt.RequireHttpsMetadata = true;
+        opt.MapInboundClaims = false; // to avoid the framework adding another nameidentifier claim to the logged in user.
         opt.TokenValidationParameters = new TokenValidationParameters {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtTokenService.SecretKey)),
